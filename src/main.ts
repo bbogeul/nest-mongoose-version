@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -12,7 +11,8 @@ import * as packageInfo from '../package.json';
 import { ClassTransformOptions } from '@nestjs/common/interfaces/external/class-transform-options.interface';
 
 let app: NestExpressApplication;
-declare const module: any;
+// for graceful shutdown;
+// declare const module: any;
 async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     console.log(`Running NestJS-Mongoose in ${process.env.NODE_ENV} mode.`);
@@ -41,7 +41,7 @@ async function bootstrap() {
     new ValidationPipe({
       // skipMissingProperties: true,
       // skipNullProperties: true,
-      // skipUndefinedProperties: false,
+      skipUndefinedProperties: false,
       validationError: { target: false, value: false }, // object 와 value 역전송 막기
       transform: true,
       transformOptions: {
