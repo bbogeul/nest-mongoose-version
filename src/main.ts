@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { json, urlencoded } from 'body-parser';
 import * as compression from 'compression';
 import * as helmet from 'helmet';
@@ -19,7 +19,7 @@ async function bootstrap() {
   }
 
   app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: process.env.NODE_ENV === 'development' ? false : true,
+    // logger: process.env.NODE_ENV === 'development' ? true : false,
   });
   app.use(urlencoded({ extended: true }));
   app.use(json({ limit: '50mb' }));
@@ -68,5 +68,11 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('swagger', app, document);
   }
+
+  await app.listen(3000);
+
+  const url = await app.getUrl();
+  Logger.log(`${url}`, 'NestApplication');
+  Logger.log(`${url}/swagger`, 'NestApplication');
 }
 bootstrap();
